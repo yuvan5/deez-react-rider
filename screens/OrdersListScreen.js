@@ -7,7 +7,7 @@ import firebase from '../firebaseCon';
 class OrderListScreen extends Component {
   constructor() {
     super();
-    this.firestoreRef = firebase.firestore().collection('users');
+    this.firestoreRef = firebase.firestore().collection('orders');
     this.state = {
       isLoading: true,
       ordersArr: []
@@ -16,58 +16,62 @@ class OrderListScreen extends Component {
   componentDidMount() {
     this.unsubscribe = this.firestoreRef.onSnapshot(this.getCollection);
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.unsubscribe();
   }
   getCollection = (querySnapshot) => {
     const ordersArr = [];
     querySnapshot.forEach((res) => {
-      const { name, email, phone } = res.data();
+      const { address, cart, total } = res.data();
+      const a = cart.map(c => c.name);
+      let cartName = a[0];
+      for (var i = 1; i < a.length; i++)
+      cartName += ', ' + a[i];
+
       ordersArr.push({
         key: res.id,
-        res,
-        name,
-        email,
-        phone,
+        address,
+        total,
+        cartName
       });
     });
     this.setState({
       ordersArr,
       isLoading: false,
-   });
-   console.log(ordersArr);
+    });
+    console.log(ordersArr);
   }
   render() {
-    if(this.state.isLoading){
-      return(
+    if (this.state.isLoading) {
+      return (
         <View style={styles.preloader}>
-          <ActivityIndicator size="large" color="#9E9E9E"/>
+          <ActivityIndicator size="large" color="#9E9E9E" />
         </View>
       )
-    }    
+    }
     return (
       <ScrollView style={styles.container}>
-          {
-            this.state.ordersArr.map((item, i) => {
-              return (
-                <ListItem
-                  key={i}
-                  chevron
-                  bottomDivider
-                  title={item.name}
-                  subtitle={item.email}
-                />
-              );
-            })
-          }
+        {
+          this.state.ordersArr.map((item, i) => {
+            // console.log(item)
+            return (
+              <ListItem key={i} bottomDivider>
+                <ListItem.Content>
+                  <ListItem.Title>{item.cartName}</ListItem.Title>
+                  <ListItem.Subtitle>{item.address.details}, {item.address.postcode}, {item.address.district}, {item.address.state}</ListItem.Subtitle>
+                </ListItem.Content>
+              </ListItem>
+            );
+          })
+        }
       </ScrollView>
     );
   }
 }
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
-   paddingBottom: 22
+    flex: 1,
+    paddingBottom: 22
   },
   preloader: {
     left: 0,
