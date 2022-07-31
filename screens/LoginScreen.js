@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Image, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native'
 import firebase from '../firebaseCon';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 function LoginScreen({navigation}) {
     const [email, setEmail] = useState('')
@@ -35,6 +36,9 @@ function LoginScreen({navigation}) {
     
         return (
             <View style={styles.container}>
+                <KeyboardAwareScrollView
+                    style={{ flex: 1, width: '100%' }}
+                    keyboardShouldPersistTaps="always">
                     <Image
                         style={styles.logo}
                         source={require('../assets/loading-placeholder.png')}
@@ -66,6 +70,7 @@ function LoginScreen({navigation}) {
                 {/* <View style={styles.footerView}>
                     <Text style={styles.footerText}>Don't have an account? <Text onPress={onFooterLinkPress} style={styles.footerLink}>Sign up</Text></Text>
                 </View> */}
+                </KeyboardAwareScrollView>
         </View>
     )
 }
@@ -82,8 +87,8 @@ const styles = StyleSheet.create({
     },
     logo: {
         flex: 1,
-        height: 220,
-        width: 200,
+        height: 200,
+        width: 400,
         alignSelf: "center",
         margin: 30
     },

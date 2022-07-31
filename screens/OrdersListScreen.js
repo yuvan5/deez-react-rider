@@ -1,6 +1,6 @@
 // screens/UserScreen.js
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, ScrollView, ActivityIndicator, View, Alert, Button } from 'react-native';
 import { ListItem } from 'react-native-elements'
 import firebase from '../firebaseCon';
 
@@ -41,6 +41,71 @@ class OrderListScreen extends Component {
     });
     console.log(ordersArr);
   }
+
+ 
+   statusAlert = () =>
+  Alert.alert(
+    "Updated Delivery Status",
+    "Order has been Delivered",
+    "My Alert Msg",
+    [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel"
+      },
+      { text: "OK", onPress: () => console.log("OK Pressed") }
+    ]
+
+  );
+
+   updateStatus() {
+
+      // var updateStatus = {
+      //                 Status: this.state.status
+      //                   };
+  
+      // var updates = {};
+      // updates['/orders/status' + Id ] = updateStatus;
+  
+      // database.ref('orders/status' + Id).update(updates);
+  
+      // alert('Order Delivered');
+
+     
+      // const orderRef = doc(this.firestore, `orders/${id}`);
+
+      // orderRef.update({ status: 'delivered' });
+
+      // return updateDoc(orderRef);
+
+
+      
+      
+  
+     
+    // const updateDBRef = firebase.firestore().collection('orders').doc(this.state.key);
+    // updateDBRef.set({
+    //   status: this.state.status,
+      
+    // }) 
+    // .then((docRef) => {
+    //   this.setState({
+    //     key: '',
+    //     status: 'Delivered',
+       
+       
+    //   });
+    //   this.props.navigation.navigate('OrderListScreen');
+    // })
+    // .catch((error) => {
+    //   console.error("Error: ", error);
+    //   this.setState({
+      
+    //   });
+    // });
+    
+  }
   render() {
     if (this.state.isLoading) {
       return (
@@ -60,6 +125,18 @@ class OrderListScreen extends Component {
                   <ListItem.Title>{item.cartName}</ListItem.Title>
                   <ListItem.Subtitle>{item.address.details}, {item.address.postcode}, {item.address.district}, {item.address.state}</ListItem.Subtitle>
                 </ListItem.Content>
+                {/* <Button 
+               onClick={() =>  updateStatus()}
+                title="Update"
+                color="#841584"
+                /> */}
+
+             <Button
+                title="Update"
+                color="#f194ff"
+                onPress={()=> this.statusAlert}
+            />
+                
               </ListItem>
             );
           })
