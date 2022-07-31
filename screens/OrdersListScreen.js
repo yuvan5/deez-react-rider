@@ -22,90 +22,33 @@ class OrderListScreen extends Component {
   getCollection = (querySnapshot) => {
     const ordersArr = [];
     querySnapshot.forEach((res) => {
-      const { address, cart, total } = res.data();
-      const a = cart.map(c => c.name);
-      let cartName = a[0];
-      for (var i = 1; i < a.length; i++)
-      cartName += ', ' + a[i];
+      const { address, cart, total, rider, status } = res.data();
+      const id = localStorage.getItem('id');
+      if (rider === id) {
+        const a = cart.map(c => c.name);
+        let cartName = a[0];
+        for (var i = 1; i < a.length; i++)
+          cartName += ', ' + a[i];
 
-      ordersArr.push({
-        key: res.id,
-        address,
-        total,
-        cartName
-      });
+        ordersArr.push({
+          key: res.id,
+          address,
+          total,
+          cartName,
+          disableButton: status === 'delivered' || status === 'completed' ? true : false
+        });
+      }
     });
     this.setState({
       ordersArr,
       isLoading: false,
     });
-    console.log(ordersArr);
   }
 
- 
-   statusAlert = () =>
-  Alert.alert(
-    "Updated Delivery Status",
-    "Order has been Delivered",
-    "My Alert Msg",
-    [
-      {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel"
-      },
-      { text: "OK", onPress: () => console.log("OK Pressed") }
-    ]
-
-  );
-
-   updateStatus() {
-
-      // var updateStatus = {
-      //                 Status: this.state.status
-      //                   };
-  
-      // var updates = {};
-      // updates['/orders/status' + Id ] = updateStatus;
-  
-      // database.ref('orders/status' + Id).update(updates);
-  
-      // alert('Order Delivered');
-
-     
-      // const orderRef = doc(this.firestore, `orders/${id}`);
-
-      // orderRef.update({ status: 'delivered' });
-
-      // return updateDoc(orderRef);
-
-
-      
-      
-  
-     
-    // const updateDBRef = firebase.firestore().collection('orders').doc(this.state.key);
-    // updateDBRef.set({
-    //   status: this.state.status,
-      
-    // }) 
-    // .then((docRef) => {
-    //   this.setState({
-    //     key: '',
-    //     status: 'Delivered',
-       
-       
-    //   });
-    //   this.props.navigation.navigate('OrderListScreen');
-    // })
-    // .catch((error) => {
-    //   console.error("Error: ", error);
-    //   this.setState({
-      
-    //   });
-    // });
-    
+  update(id) {
+    firebase.firestore().doc(`orders/${id}`).update({ status: 'delivered' });
   }
+
   render() {
     if (this.state.isLoading) {
       return (
@@ -118,25 +61,20 @@ class OrderListScreen extends Component {
       <ScrollView style={styles.container}>
         {
           this.state.ordersArr.map((item, i) => {
-            // console.log(item)
             return (
               <ListItem key={i} bottomDivider>
                 <ListItem.Content>
                   <ListItem.Title>{item.cartName}</ListItem.Title>
                   <ListItem.Subtitle>{item.address.details}, {item.address.postcode}, {item.address.district}, {item.address.state}</ListItem.Subtitle>
                 </ListItem.Content>
-                {/* <Button 
-               onClick={() =>  updateStatus()}
-                title="Update"
-                color="#841584"
-                /> */}
 
-             <Button
-                title="Update"
-                color="#f194ff"
-                onPress={()=> this.statusAlert}
-            />
-                
+                <Button
+                  title="Update"
+                  color="#f194ff"
+                  disabled={item.disableButton}
+                  onPress={() => this.update(item.key)}
+                />
+
               </ListItem>
             );
           })
