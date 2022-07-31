@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import OrderListScreen from './screens/OrdersListScreen';
+import LoginScreen from './screens/LoginScreen';
 
 const Stack = createStackNavigator();
 function MyStack() {
@@ -19,6 +20,11 @@ function MyStack() {
           },
         }}
       >
+      <Stack.Screen 
+        name="LoginScreen" 
+        component={LoginScreen} 
+        options={{ title: 'Login' }}
+      />
       <Stack.Screen 
         name="OrdersListScreen" 
         component={OrderListScreen} 
